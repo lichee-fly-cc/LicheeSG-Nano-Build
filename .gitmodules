@@ -1,6 +1,6 @@
 [submodule "buildroot"]
 	path = buildroot
-	url = https://github.com/scpcom/buildroot
+	url = https://github.com/lichee-fly-cc/buildroot.git
 	branch = nanokvm-2025.02
 [submodule "freertos"]
 	path = freertos
