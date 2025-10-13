@@ -120,6 +120,13 @@ cd ..
 source build/cvisetup.sh
 defconfig ${SG_BOARD_LINK}
 
+if [ $flysoft = y ]; then
+  cfg="build/boards/${SG_BOARD_FAMILY}/${SG_BOARD_LINK}/${SG_BOARD_LINK}_defconfig"
+  if ! grep -qxF 'CONFIG_RTL8812AU=m' "$cfg"; then
+    sed -i '/^CONFIG_VETH=y$/a CONFIG_RTL8812AU=m' "$cfg"
+  fi
+fi
+
 cd buildroot
 if [ $maixcdk = y ]; then
   sed -i s/'^BR2_PACKAGE_PARTED=y'/'BR2_PACKAGE_MAIX_CDK=y\nBR2_PACKAGE_PARTED=y'/g configs/${BR_DEFCONFIG}
