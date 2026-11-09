@@ -6,3 +6,7 @@
 *.sqfs
 install/*
 cscope.out
+
+.ccache/
+/mavp2p/
+/host/go/
