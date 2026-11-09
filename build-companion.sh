@@ -158,6 +158,8 @@ if ! grep -q "hostname.prefix" tools/common/sd_tools/sd_gen_burn_image_rootless.
 fi
 
 # kernel: trim unused subsystems, keep USB serial/acm for FC telemetry
+# and the whole video stack (CONFIG_VIDEO_CVITEK + CIF + SNS_I2C) for the
+# os04a10 camera; only the display framebuffer is disabled
 offcnf="CONFIG_IP_VS
 CONFIG_WIREGUARD
 CONFIG_PACKET_DIAG
@@ -165,7 +167,6 @@ CONFIG_UNIX_DIAG
 CONFIG_NETLINK_DIAG
 CONFIG_NET_IPGRE
 CONFIG_VXLAN
-CONFIG_VIDEO_CVITEK
 CONFIG_FB_CVITEK
 CONFIG_JFFS2_FS
 CONFIG_SQUASHFS"
@@ -222,23 +223,15 @@ defconfig ${SG_BOARD_LINK}
 
 cd buildroot
 
-# trim init scripts
-modoff="soph_fast_image.ko
-soph_fb.ko
+# trim init scripts: only display/periphery modules are disabled,
+# the camera chain (mipi_rx, snsr_i2c, vi, vpss, dwa, rgn, vcodec, jpeg,
+# vc_driver) must stay loaded for the os04a10 + wfb-ng video link
+modoff="soph_fb.ko
 soph_ive.ko
-soph_jpeg.ko
-soph_mipi_rx.ko
 soph_mipi_tx.ko
-soph_rgn.ko
-soph_rtos_cmdqu.ko
-soph_saradc.ko
-soph_snsr_i2c.ko
 soph_tpu.ko
-soph_vc_driver.ko
-soph_vcodec.ko
-soph_vi.ko
 soph_vo.ko
-soph_vpss.ko"
+soph_saradc.ko"
 
 for m in $modoff; do
   sed -i s/'insmod '$m/'#insmod '$m/g board/cvitek/SG200X/overlay/etc/init.d/S00kmod
